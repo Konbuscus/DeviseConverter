@@ -1,0 +1,109 @@
+﻿@model DeviseConverter.Models.ConverterModel
+@{
+    ViewData["MostUsed"] = DeviseConverter.Helper.QueryDBHelper.GetMostUsedForOfflineMode();
+    bool offlineMode = false;
+}
+<head>
+    <link href="https://gitcdn.github.io/bootstrap-toggle/2.2.2/css/bootstrap-toggle.min.css" rel="stylesheet">
+</head>
+<br />
+<br />
+<form class="form-inline">
+    <label name="offline" class="checkbox-inline">
+        <input name="offline" data-toggle="toggle" type="checkbox">
+        Mode Offline
+    </label><br />
+    <label  for="From">Devise Intiale :</label>
+    @if (offlineMode)
+    {
+        @Html.DropDownList("From", new SelectList((System.Collections.IEnumerable)ViewData["MostUsed"], "Name", "Name", selectedValue: "FRA"))
+    }
+    else
+    {
+        @Html.DropDownList("From", new SelectList((System.Collections.IEnumerable)ViewData["CurrenciesList"], "Name", "Name", selectedValue: "FRA"))
+    }
+
+    <label  for="To">Devise Souhaitée : </label>
+    @if (offlineMode)
+    {
+        @Html.DropDownList("To", new SelectList((System.Collections.IEnumerable)ViewData["MostUsed"], "Name", "Name", selectedValue: "FRA"))
+    }
+    else
+    {
+        @Html.DropDownList("To", new SelectList((System.Collections.IEnumerable)ViewData["CurrenciesList"], "Name", "Name", selectedValue: "FRA"))
+    }
+
+    <label class="sr-only" for="amount">Name</label>   
+     @Html.Editor("amount", new { htmlAttributes = new {@class="form-control", placeholder = "5.000" } })
+ 
+    <button type="button" class="btn btn-success" id="convert">Convertir les devises !</button>
+    <span class="ToFill"></span>
+    
+</form>
+
+    <!-- Javascript -->
+    <script src="@Url.Content("~/Scripts/jquery-1.10.2.min.js")"></script>
+    <script src="@Url.Content("~/Scripts/bootstrap.min.js")"></script>
+    <script src="https://gitcdn.github.io/bootstrap-toggle/2.2.2/js/bootstrap-toggle.min.js"></script>
+    @section Scripts{
+
+        <script type="text/javascript">
+        $(document).ready(function () {
+
+
+            $("select").on("change", function () {
+
+                var name = this.name;
+
+            });
+
+            $("label[name='offline']").on("click", function () {
+                $.post('@Url.Action("IsOffline","Home")/' + true);
+            });
+
+
+            $("#convert").on("click", function () {
+
+                postConvert();
+            });
+
+        });
+
+
+        function postConvert()
+        {
+            var cm = {};
+            $("form").find("input, select").each(function () {
+
+                if (this.name == "offline")
+                {
+                    cm[this.name] = $(this).is(":checked");
+                } else {
+                    cm[this.name] = $(this).val();
+                }
+                
+
+            });
+
+            $.post("@Url.Action("ConvertShit", "Home")/", cm, true)
+                .success(function (response) {
+                    $("input[name='amount']").val(response);
+                    $(".ToFill").removeClass("alert-danger");
+                    $(".ToFill").addClass("alert-success");
+                    $(".ToFill").text("La conversion a été réalisée avec succès !")
+                })
+                .fail(function (response) {
+                    $(".ToFill").removeClass("alert-success");
+                    $(".ToFill").addClass("alert-danger");
+                    $(".ToFill").text("La conversion a échouée, verifiez que vous ayez entrer un nombre comme ceci : 5.000 pour dire 5000 !")
+                });
+        }
+
+
+        </script>
+
+
+
+
+
+    }
