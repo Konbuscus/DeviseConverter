@@ -8,11 +8,9 @@
 </head>
 <br />
 <br />
+<button id="main" class="btn-primary btn-info">Mode offline </button><br />
+<span class=""></span>
 <form class="form-inline">
-    <label name="offline" class="checkbox-inline">
-        <input name="offline" data-toggle="toggle" type="checkbox">
-        Mode Offline
-    </label><br />
     <label  for="From">Devise Intiale :</label>
     @if (offlineMode)
     {
@@ -35,7 +33,7 @@
 
     <label class="sr-only" for="amount">Name</label>   
      @Html.Editor("amount", new { htmlAttributes = new {@class="form-control", placeholder = "5.000" } })
- 
+     
     <button type="button" class="btn btn-success" id="convert">Convertir les devises !</button>
     <span class="ToFill"></span>
     
@@ -51,23 +49,29 @@
         $(document).ready(function () {
 
 
+
+           
+            
             $("select").on("change", function () {
 
                 var name = this.name;
 
             });
 
-            $("label[name='offline']").on("click", function () {
-                $.post('@Url.Action("IsOffline","Home")/' + true);
-            });
-
-
             $("#convert").on("click", function () {
 
                 postConvert();
             });
 
-        });
+            $("#main").on("click", function () {
+
+                location.href = "@Url.Action("IsOffline","Home", new {offline = true })";
+
+            });
+
+            });
+
+           
 
 
         function postConvert()

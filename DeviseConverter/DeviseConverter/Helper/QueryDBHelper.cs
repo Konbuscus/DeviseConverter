@@ -44,7 +44,7 @@ namespace DeviseConverter.Helper
         /// <returns></returns>
         public static List<CurrencyModel> GetMostUsedForOfflineMode()
         {
-            string request = $"SELECT * FROM osef.currencies where idCURRENCIES = 'FRA' OR " +
+            string request = $"SELECT * FROM osef.currencies where idCURRENCIES = 'EUR' OR " +
                 $"idCURRENCIES = 'GBP' OR idCURRENCIES = 'JPY' OR idCURRENCIES = 'USD' OR idCURRENCIES= 'AUD' OR " +
                 $"idCURRENCIES = 'CNY' OR idCURRENCIES = 'CAD' ";
 

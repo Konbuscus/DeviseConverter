@@ -1,24 +1,23 @@
 ﻿@model DeviseConverter.Models.ConverterModel
 @{
     ViewData["MostUsed"] = DeviseConverter.Helper.QueryDBHelper.GetMostUsedForOfflineMode();
-    bool offlineMode = false;
+    bool offlineMode = true;
 }
 <head>
     <link href="https://gitcdn.github.io/bootstrap-toggle/2.2.2/css/bootstrap-toggle.min.css" rel="stylesheet">
 </head>
 <br />
 <br />
+<button id="fuckU" class="btn-primary btn-info">Mode online </button><br /><br />
+<h3>Vous êtes acutellement en mode offline <span class="badge badge-info">Seulement 7 devises sont disponibles en offline</span></h3>
 <form class="form-inline">
-    <label name="offline" class="checkbox-inline">
-        <input checked name="offline" data-toggle="toggle" type="checkbox">
-        Mode Offline
-    </label><br />
     <label for="From">Devise Intiale :</label>
         @Html.DropDownList("From", new SelectList((System.Collections.IEnumerable)ViewData["CurrenciesList"], "Name", "Name", selectedValue: "FRA"))
     <label for="To">Devise Souhaitée : </label>
         @Html.DropDownList("To", new SelectList((System.Collections.IEnumerable)ViewData["CurrenciesList"], "Name", "Name", selectedValue: "FRA"))
     <label class="sr-only" for="amount">Name</label>
     @Html.Editor("amount", new { htmlAttributes = new { @class = "form-control", placeholder = "5.000" } })
+    <input type="hidden" name="offline" value=true />
     <button type="button" class="btn btn-success" id="convert">Convertir les devises !</button>
     <span class="ToFill"></span>
 </form>
@@ -39,10 +38,10 @@
 
             });
 
-            $("label[name='offline']").on("click", function () {
-                $.post('@Url.Action("IsOffline", "Home")/offline=' + false);
-            });
+            $("#fuckU").on("click", function () {
 
+                window.location.href = '@Url.Action("Index","Home")';
+            });
 
             $("#convert").on("click", function () {
 
@@ -59,14 +58,14 @@
 
                 if (this.name == "offline")
                 {
-                    cm[this.name] = $(this).is(":checked");
+                    cm[this.name] = $(this).val();
                 } else {
                     cm[this.name] = $(this).val();
                 }
 
-
+               
             });
-
+           
             $.post("@Url.Action("ConvertShit", "Home")/", cm, true)
                 .success(function (response) {
                     $("input[name='amount']").val(response);

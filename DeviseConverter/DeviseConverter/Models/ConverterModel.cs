@@ -10,6 +10,6 @@ namespace DeviseConverter.Models
         public string amount { get; set; }
         public string From { get; set; }
         public string To { get; set; }
-        public string offline { get; set; }
+        public bool offline { get; set; }
     }
 }

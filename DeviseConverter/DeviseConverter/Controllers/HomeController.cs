@@ -51,7 +51,7 @@ namespace DeviseConverter.Controllers
         public JsonResult ConvertShit(ConverterModel cm)
         {
             ConverterModel cm2 = new ConverterModel();
-            if (cm.offline == "true")
+            if (cm.offline)
             {
                 cm2.amount = Utility.ConvertOffline.resultConvertOffline(cm);
             }
